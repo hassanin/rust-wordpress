@@ -29,6 +29,7 @@ async fn main() {
     let handle = tokio::spawn(async move { res2.await }).await;
     println!("Hanlde result is {:?}", handle);
     // let set = res2.await;
+    //soft
     // print!("Result is {:?}", set);
     // let res3 = res.and_then(|r4| r4 * 2);
 
