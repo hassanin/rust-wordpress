@@ -30,7 +30,7 @@ async fn main() {
     println!("Hanlde result is {:?}", handle);
     // let set = res2.await;
     //soft
-    // print!("Result is {:?}", set);
+    // print!("Result is {:?}", set); sadsa
     // let res3 = res.and_then(|r4| r4 * 2);
 
     ()
