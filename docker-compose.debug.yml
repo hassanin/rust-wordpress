@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  rustwordpress:
+    image: rustwordpress
+    build:
+      context: .
+      dockerfile: ./Dockerfile

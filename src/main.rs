@@ -1,43 +1,33 @@
-use futures::prelude::*;
-use tokio::time::Duration;
-// use tokio::prelude::*;
-#[tokio::main]
-async fn main() {
-    println!("Hello, world!");
-    let res = tokio::spawn(async move {
-        let ds1 = do_long_stuff().await;
-        5 * ds1
-    });
-    println!("Doing other stufff");
-
-    let res2 = res
-        .map(|s| -> bool {
-            println!("In mapping output");
-            s.is_ok()
-        })
-        .map(|res| {
-            print!("received {}", res);
-            if res {
-                print!("Evaluated success");
-                1
-            } else {
-                print!("Evaluated success");
-                -1
-            }
-        });
-
-    let handle = tokio::spawn(async move { res2.await }).await;
-    println!("Hanlde result is {:?}", handle);
-    // let set = res2.await;
-    //soft
-    // print!("Result is {:?}", set); sadsa asdsa
-    // let res3 = res.and_then(|r4| r4 * 2);
-
-    ()
+use actix_files as fs;
+use actix_web::{get, web, App, HttpServer, Responder};
+use config::read_config;
+use std::env;
+mod auth;
+mod config;
+#[get("/{id}/{name}/index.html")]
+async fn index(web::Path((id, name)): web::Path<(u32, String)>) -> impl Responder {
+    format!("Hello {}! id:{}", name, id)
 }
-pub enum HelloWorld {}
 
-async fn do_long_stuff() -> i32 {
-    let _res = tokio::time::sleep(Duration::from_secs(2)).await;
-    6
+#[get("/")]
+async fn main_entry() -> impl Responder {
+    format!("Hello Stranger")
+}
+
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    let path = env::current_dir()?;
+    println!("Path is {:?}", path);
+    let read_config = read_config().expect("to read config");
+    println!("read info is {:?}", read_config);
+    HttpServer::new(|| {
+        App::new()
+            .service(index)
+            .service(main_entry)
+            .service(fs::Files::new("/static", "./public").show_files_listing())
+            .service(auth::get_routes("/users"))
+    })
+    .bind("0.0.0.0:7003")?
+    .run()
+    .await
 }
