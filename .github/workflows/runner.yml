@@ -19,14 +19,17 @@ jobs:
         run: |
           # # Your ML workflow goes here
           # pip install -r requirements.txt
+          pip install markdownify
           # python train.py
           echo "Hello World"
+          python convertToMD.py
       - name: Write CML report
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Post reports as comments in GitHub PRs
-          echo Hello there >> report.md
-          cml-publish ./images/img1.png --md >> report.md
-          cml-send-comment report.md
+          # echo Hello there >> report.md
+          # echo ""
+          # cml-publish ./images/img1.png --md >> report.md
+          cml-send-comment ./report/output.md
           
